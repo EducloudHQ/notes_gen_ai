@@ -1,0 +1,11 @@
+requests
+boto3==1.28.57
+aws-lambda-powertools[all]
+PyPDF2==3.0.1
+shortuuid==1.0.11
+botocore==1.31.57
+BeautifulSoup4==4.12.2
+langchain==0.0.312
+urllib3
+momento==1.12.0
+transformers

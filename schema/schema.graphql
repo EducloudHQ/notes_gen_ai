@@ -1,0 +1,75 @@
+schema {
+            query:Query
+            mutation: Mutation
+            subscription: Subscription
+        }
+
+type Query{
+    enhanceNote(input:String!):EnhanceNoteResult! @aws_api_key
+    getNote(id:String!,userId:String!):Note! @aws_api_key
+    getAllNotes(userId:String!):[Note!]!@aws_api_key
+    queryDocument(input:String!):DocumentResult! @aws_api_key
+}
+
+type Mutation{
+    createUserAccount(input:CreateUserInput!):User! @aws_api_key
+    createNote(notesInput:CreateNoteInput!):Note! @aws_api_key
+    updateNote(notesInput:updateNoteInput!):Note! @aws_api_key
+
+}
+
+type Subscription {
+  createdNote: Note @aws_subscribe(mutations: ["createNote"])
+
+}
+type DocumentResult @aws_api_key{
+    result:String!
+}
+type EnhanceNoteResult @aws_api_key{
+    result:String!
+}
+
+type User{
+    id:ID!
+    username:String!
+    email:AWSEmail!
+    createdOn:AWSTimestamp!
+}
+
+type Note{
+    id:ID!
+    note:String!
+    title:String!
+    status:Boolean!
+    username:String!
+    createdOn:AWSTimestamp!
+    updatedOn:AWSTimestamp!
+}
+
+input CreateNoteInput{
+
+    note:String!
+    title:String!
+    username:String!
+    status:Boolean!
+
+}
+input updateNoteInput{
+    id:String!
+    title:String!
+    note:String!
+    username:String!
+    status:Boolean!
+
+}
+
+
+
+input CreateUserInput{
+    username:String!
+    email:AWSEmail!
+
+
+}
+
+
