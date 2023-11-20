@@ -1,4 +1,3 @@
-
 import os, json
 import boto3
 from aws_lambda_powertools import Logger
@@ -9,8 +8,10 @@ from momento import (
     PreviewVectorIndexClient,
     VectorIndexConfigurations,
 )
-
+from botocore.exceptions import ClientError
 from langchain.vectorstores import MomentoVectorIndex
+
+from src.utils.secrets import get_secret
 
 DOCUMENT_TABLE = os.environ["DOCS_TABLE"]
 BUCKET = os.environ["BUCKET"]
@@ -30,6 +31,8 @@ def set_doc_status(user_id, document_id, status):
     )
 
 
+
+
 @logger.inject_lambda_context(log_event=True)
 def lambda_handler(event, context):
     event_body = json.loads(event["Records"][0]["body"])
@@ -37,6 +40,11 @@ def lambda_handler(event, context):
     user_id = event_body["user"]
     key = event_body["key"]
     file_name_full = key.split("/")[-1]
+
+
+    secret = get_secret()
+
+    logger.info(f"secret is {secret}")
 
     set_doc_status(user_id, document_id, "PROCESSING")
 
@@ -63,16 +71,12 @@ def lambda_handler(event, context):
         documents,
         client=PreviewVectorIndexClient(
             VectorIndexConfigurations.Default.latest(),
-            credential_provider=CredentialProvider.from_environment_variable(
-                "MOMENTO_API_KEY"
-            ),
-        ),
+            credential_provider= CredentialProvider.from_string(secret),
 
-        embedding=embeddings,
-        index_name="summary"
-    )
+            embedding=embeddings,
+            index_name="summary"
+        ))
 
     logger.info(f"Indexing {file_name_full}...")
 
     set_doc_status(user_id, document_id, "READY")
-

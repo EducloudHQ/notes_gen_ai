@@ -1,5 +1,0 @@
-requests
-boto3==1.28.57
-aws-lambda-powertools[all]
-PyPDF2==3.0.1
-shortuuid==1.0.11

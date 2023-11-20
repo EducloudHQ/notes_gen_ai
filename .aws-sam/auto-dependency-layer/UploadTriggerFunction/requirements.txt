@@ -1,5 +1,0 @@
-boto3==1.28.57
-botocore==1.31.57
-pypdf==3.16.2
-aws-lambda-powertools[all]
-shortuuid==1.0.11

@@ -4,6 +4,7 @@ from aws_lambda_powertools.event_handler.appsync import Router
 
 from langchain.llms.bedrock import Bedrock
 
+from src.utils.secrets import get_secret
 from langchain.embeddings import BedrockEmbeddings
 from momento import (
     CredentialProvider,
@@ -33,6 +34,9 @@ def query_document(input:str):
         region_name="us-east-1",
     )
 
+    secret = get_secret()
+    logger.info(f"secret is ${secret}")
+
     embeddings, llm = BedrockEmbeddings(
         model_id="amazon.titan-embed-text-v1",
         client=bedrock_runtime,
@@ -44,9 +48,7 @@ def query_document(input:str):
     vector_db = MomentoVectorIndex(embedding=embeddings,
                                    client=PreviewVectorIndexClient(
                                        VectorIndexConfigurations.Default.latest(),
-                                       credential_provider=CredentialProvider.from_environment_variable(
-                                           "MOMENTO_API_KEY"
-                                       ),
+                                       credential_provider= CredentialProvider.from_string(secret),
                                    ),
 
                                    index_name="summary")
