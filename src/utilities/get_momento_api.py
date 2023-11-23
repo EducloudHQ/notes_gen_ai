@@ -3,6 +3,11 @@ import boto3
 from botocore.exceptions import ClientError
 
 
+class MomentoAPI:
+    def __init__(self):
+        self.secret = get_secret()
+
+
 def get_secret():
     secret_name = "dev/notes_api/momento"
     region_name = "us-east-1"

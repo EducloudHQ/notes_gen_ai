@@ -37,16 +37,18 @@ Resources:
       Timeout: 180
       MemorySize: 2048
       Policies:
-          - S3CrudPolicy:
-              BucketName: !Ref DocumentBucket
-          - Statement:
-              - Sid: "BedrockScopedAccess"
-                Effect: "Allow"
-                Action: "bedrock:InvokeModel"
-                Resource:
-                - "arn:aws:bedrock:*::foundation-model/ai21.j2-ultra-v1"
-                - "arn:aws:bedrock:*::foundation-model/anthropic.claude-v2"
-                - "arn:aws:bedrock:*::foundation-model/amazon.titan-embed-text-v1"
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: "arn:aws:secretsmanager:us-east-1:132260253285:secret:dev/notes_api/momento-cf7MCS"
+        - S3CrudPolicy:
+            BucketName: !Ref DocumentBucket
+        - Statement:
+            - Sid: "BedrockScopedAccess"
+              Effect: "Allow"
+              Action: "bedrock:InvokeModel"
+              Resource:
+              - "arn:aws:bedrock:*::foundation-model/ai21.j2-ultra-v1"
+              - "arn:aws:bedrock:*::foundation-model/anthropic.claude-v2"
+              - "arn:aws:bedrock:*::foundation-model/amazon.titan-embed-text-v1"
 
       Tags:
         SOLUTION: LambdaPowertoolsPython
@@ -321,6 +323,8 @@ Resources:
       Timeout: 180
       MemorySize: 2048
       Policies:
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: "arn:aws:secretsmanager:us-east-1:132260253285:secret:dev/notes_api/momento-cf7MCS"
         - SQSPollerPolicy:
             QueueName: !GetAtt EmbeddingQueue.QueueName
         - S3CrudPolicy:
